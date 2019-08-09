@@ -16,6 +16,7 @@
             var message = "This customer has " + prefCount + " product preferences.";
 
             alert(message);
+
         };
 
         function lineInit(context) {

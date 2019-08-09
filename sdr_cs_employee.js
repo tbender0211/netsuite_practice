@@ -3,8 +3,8 @@
  * @NScriptType ClientScript
  */
 
- define(["N/runtime"],
-    function(runtime) {
+ define(["N/runtime", "N/https", "N/url"],
+    function(runtime, https, url) {
 
 
         // function fieldChanged(context) {
@@ -22,42 +22,42 @@
 
         // };
 
-        function pageInit(context) {
-            var employee = context.currentRecord;
+        // function pageInit(context) {
+        //     var employee = context.currentRecord;
 
-            var perfRevCount = employee.getLineCount({
-                sublistId : "recmachcustrecord_sdr_perf_subordinate"
-            });
+        //     var perfRevCount = employee.getLineCount({
+        //         sublistId : "recmachcustrecord_sdr_perf_subordinate"
+        //     });
 
-            var notes = ("This employee has " + perfRevCount + " performance reviews.");
+        //     var notes = ("This employee has " + perfRevCount + " performance reviews.");
 
-            var fRatingCount = 0;
+        //     var fRatingCount = 0;
 
-            for (var i=0; i < perfRevCount; i++) {
-                var ratingCode = employee.getSublistValue({
-                    sublistId : "recmachcustrecord_sdr_perf_subordinate",
-                    fieldId : "custrecord_sdr_perf_rating_code",
-                    line : i
-                });
+        //     for (var i=0; i < perfRevCount; i++) {
+        //         var ratingCode = employee.getSublistValue({
+        //             sublistId : "recmachcustrecord_sdr_perf_subordinate",
+        //             fieldId : "custrecord_sdr_perf_rating_code",
+        //             line : i
+        //         });
 
-                if (ratingCode == "F") {
-                    fRatingCount += 1;
-                };
-            };
+        //         if (ratingCode == "F") {
+        //             fRatingCount += 1;
+        //         };
+        //     };
 
-            notes += "This employee has " + fRatingCount + " F-rated reviews."
-        //     alert(notes);
+        //     notes += "This employee has " + fRatingCount + " F-rated reviews."
+        // //     alert(notes);
 
-            var empCode = employee.getValue("custentity_sdr_employee_code");
+        //     var empCode = employee.getValue("custentity_sdr_employee_code");
 
-            if (!empCode) {
-                var defaultEmpCode = runtime.getCurrentScript().getParameter({
-                    name : "custscript_sdr_default_emp_code"
-                });
+        //     if (!empCode) {
+        //         var defaultEmpCode = runtime.getCurrentScript().getParameter({
+        //             name : "custscript_sdr_default_emp_code"
+        //         });
 
-                employee.setValue("custentity_sdr_employee_code", defaultEmpCode);
-            };
-        };
+        //         employee.setValue("custentity_sdr_employee_code", defaultEmpCode);
+        //     };
+        // };
 
         // function lineInit(context) {
             // var employee = context.currentRecord;
@@ -96,17 +96,26 @@
         //     return true;
         // }
 
-        // function saveRecord(context) {
-        //     var employee = context.currentRecord;
-        //     var employeeCode = employee.getValue("custentity_sdr_employee_code");
+        function saveRecord(context) {
+            var employee = context.currentRecord;
+            var employeeCode = employee.getValue("custentity_sdr_employee_code");
 
-            // if (employeeCode == "x") {
-            //     alert("Invalid Employee Code value. Please try again.");
-            //     return false;
-            // };
+            var restletUrl = url.resolveScript({
+                scriptId : "customscript_sdr_rl_validate_emp_code",
+                deploymentId : "customdeploy_sdr_rl_validate_emp_code"
+            });
 
-            // return true;
-        // };
+            var response = https.get({
+                url : restletUrl + "&sdr_emp_code=" + employeeCode
+            })
+
+            if (response.body == "invalid") {
+                alert("Invalid Employee Code value. Please try again.");
+                return false;
+            };
+
+            return true;
+        };
 
         // function validateField(context) {
         //     var employee = context.currentRecord;
@@ -124,11 +133,11 @@
         // };
 
         return {
-            pageInit : pageInit
+            // pageInit : pageInit
         //     lineInit : lineInit,
         //     validateLine : validateLine
             // fieldChanged : fieldChanged
-            // saveRecord : saveRecord
+            saveRecord : saveRecord
             // validateField : validateField
         };
     });

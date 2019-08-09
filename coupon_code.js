@@ -3,9 +3,9 @@
  * @NScriptType ClientScript
  */
 
- define([],
+ define(["N/https", "N/url"],
 
-    function() {
+    function(https, url) {
 
         function fieldChanged(context) {
             var customer = context.currentRecord;
@@ -37,11 +37,19 @@
             var customer = context.currentRecord;
             var couponCode = customer.getText("custentity_sdr_coupon_code");
             var coupon = customer.getValue("custentity_sdr_apply_coupon");
+            var restletUrl = url.resolveScript({
+                scriptId : "customscript_sdr_rl_coupon_code",
+                deploymentId : "customdeploy_sdr_rl_coupon_code"
+            });
 
-            if (coupon == true) {
+            var response = https.get({
+                url : restletUrl + "&sdr_coupon_code=" + couponCode
+            });
+
+            if (coupon == true && couponCode) {
                 
-                if (couponCode.length != 5) {
-                    alert("Coupon code must be 5 characters.");
+                if (response.body == "invalid" ) {
+                    alert("Invalid coupon code.");
                     return false;
                 };
 

@@ -1,0 +1,7 @@
+name,custrecord_dsi_app_config_pack_length,custrecord_dsi_app_config_pack_width,custrecord_dsi_app_config_pack_height
+Name,Length,Width,Height
+TEST BOX 1,6,6,4
+TEST BOX 2,16,12,12
+TEST BOX 3,7,8,4
+TEST BOX 4,14,14,16
+TEST BOX 5,23,14,24

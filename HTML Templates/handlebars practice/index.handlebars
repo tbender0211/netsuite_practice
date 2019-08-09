@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>Service Items</title>
+
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+        <meta charset="utf-8">
+
+        <link href="{{serviceItemDS.boostrapcss}}" rel= "stylesheet" type="text/css">
+        
+	</head>
+	<body>
+        {{#each serviceItems}}
+            <div class="card" style="width: 18rem;">
+                <img src="{{this.storedisplayimage}}" class="card-img-top" alt="...">
+                <div class="card-body">
+                    <h5 class="card-title">{{this.itemid}}</h5>
+                    <p class="card-text">{{this.storedescription}}</p>
+                    <a href="#" class="btn btn-primary">Go somewhere</a>
+                </div>
+            </div>
+        {{/each}}
+        <script src="{{serviceItemDS.jquery}}" type="text/javascript"></script>
+        <script src="{{serviceItemDS.bootstrapjs}}" type="text/javascript"></script>
+
+	</body>
+</html>
